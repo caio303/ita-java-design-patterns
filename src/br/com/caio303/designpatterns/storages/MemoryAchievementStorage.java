@@ -1,8 +1,10 @@
 package br.com.caio303.designpatterns.storages;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import br.com.caio303.designpatterns.abstracts.Achievement;
 import br.com.caio303.designpatterns.interfaces.AchievementObserver;
@@ -19,15 +21,13 @@ public class MemoryAchievementStorage implements AchievementStorage {
 		mapUsersAchievements.putIfAbsent(user, new HashMap<>());
 		
 		boolean adicionou = a.tratarAdicao(mapUsersAchievements.get(user));
-		if(adicionou) {
+		if(adicionou)
 			notifyObservers(user,a);
-			addObserver(a);
-		}
 	}
 
 	@Override
 	public List<Achievement> getAchievements(String user) {
-		return (List<Achievement>) mapUsersAchievements.get(user).values();
+		return mapUsersAchievements.get(user).values().stream().collect(Collectors.toList());
 	}
 
 	@Override
@@ -36,15 +36,18 @@ public class MemoryAchievementStorage implements AchievementStorage {
 	}
 	
 	private void notifyObservers(String user, Achievement a) {
-		achievementObservers.forEach(aObs -> aObs.achievementUpdate(user, a));
+		if(achievementObservers != null && achievementObservers.size() > 0)
+			achievementObservers.forEach(aObs -> aObs.achievementUpdate(user, a));
 	}
-	
-	private void addObserver(Achievement a) {
-		if(a instanceof AchievementObserver)
-			addObserver((AchievementObserver) a);
-	}
-	
-	private void addObserver(AchievementObserver newObserver) {
+
+	public void addObserver(AchievementObserver newObserver) {
+		if(achievementObservers == null)
+			achievementObservers = new ArrayList<>();
 		achievementObservers.add(newObserver);
 	}
+	
+//	private void addObserver(Achievement a) {
+//		if(a instanceof AchievementObserver)
+//			addObserver((AchievementObserver) a);
+//	}
 }

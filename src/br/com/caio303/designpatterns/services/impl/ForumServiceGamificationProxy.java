@@ -12,8 +12,6 @@ public class ForumServiceGamificationProxy implements ForumService, AchievementO
 
 	private ForumService forumService;
 	
-	private AchievementStorage achievementStorage = AchievementStorageFactory.getAchievementStorage();
-	
 	// TODO Sprint 2:
 	//		implementar metodos para validar se usuarioExiste(), 
 	//		topicoExiste(), e comentarioExiste() para melhor aproveitamento do Proxy
@@ -46,11 +44,19 @@ public class ForumServiceGamificationProxy implements ForumService, AchievementO
 	public void achievementUpdate(String user, Achievement a) {
 		if(a instanceof Points) {
 			Points p = Points.valueOf(a);
-			if(p.getName().equals("CREATION") && p.getAmountOfPoints() >= 100)
-				achievementStorage.addAchievement(user, new Badge("INVENTOR"));
-			else if(p.getName().equals("PARTICIPATION") && p.getAmountOfPoints() >= 100)
-				achievementStorage.addAchievement(user, new Badge("PART OF THE COMMUNITY"));
+			if(p.getName().equals("CREATION") && getAmtOfPoints(user, a.getName()) >= 100)
+				getAchievStorage().addAchievement(user, new Badge("INVENTOR"));
+			else if(p.getName().equals("PARTICIPATION") && getAmtOfPoints(user, a.getName()) >= 100)
+				getAchievStorage().addAchievement(user, new Badge("PART OF THE COMMUNITY"));
 		}
+	}
+	
+	private Integer getAmtOfPoints(String user, String pointsAchievName) {
+		return Points.valueOf(getAchievStorage().getAchievement(user, pointsAchievName)).getAmountOfPoints();
+	}
+	
+	private AchievementStorage getAchievStorage() {
+		return AchievementStorageFactory.getAchievementStorage();
 	}
 
 }

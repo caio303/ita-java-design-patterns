@@ -6,8 +6,6 @@ public class AchievementStorageFactory {
 	private static AchievementStorage achievementStorage;
 	
 	public static AchievementStorage getAchievementStorage() {
-//		if(achievementStorage == null)
-//			return new MemoryAchievementStorage();
 		return achievementStorage;
 	}
 	public static void setAchievementStorage(AchievementStorage newAchievementStorage) {
